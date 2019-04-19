@@ -6,34 +6,62 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter cells: ");
-        String cells = sc.nextLine();
+        String cells = sc.nextLine().replaceAll("\"","");
         int numOfX = 0;
         int numOfO = 0;
 
         char[][] board = new char[3][3];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                char temp = cells.charAt(i*3+j);
-                if(temp == 'O') {
+                char temp = cells.charAt(i * 3 + j);
+                if (temp == 'O') {
                     board[i][j] = temp;
                     numOfO++;
-                }
-                else if (temp == 'X') {
+                } else if (temp == 'X') {
                     board[i][j] = temp;
                     numOfX++;
-                }
-                else if (temp == ' ') board[i][j] = temp;
+                } else if (temp == ' ') board[i][j] = temp;
             }
         }
 
         System.out.println("---------");
-        for(char[] row : board){
-            System.out.println(Arrays.toString(row).replaceAll("\\[","| ")
-            .replaceAll("]", " |").replaceAll(",",""));
+        for (char[] row : board) {
+            System.out.println(Arrays.toString(row).replaceAll("\\[", "| ")
+                    .replaceAll("]", " |").replaceAll(",", ""));
         }
         System.out.println("---------");
 
-    }
+        if (isImpossible(board, numOfO, numOfX))
+            System.out.println("Impossible");
+        else if(checkScore(board, 'X') )
+            System.out.println("X wins");
+        else if (checkScore(board, 'O'))
+            System.out.println("O wins");
+        else if (numOfO == 4 && numOfX == 5 || numOfO == 5 && numOfX == 4)
+            System.out.println("Draw");
+        else
+            System.out.println("Game not finished");
+        }
+
+        private static boolean checkScore (char[][] board, char val){
+            return (board[0][0] == val && board[0][1] == val && board[0][2] == val ||
+                    board[1][0] == val && board[1][1] == val && board[1][2] == val ||
+                    board[2][0] == val && board[2][1] == val && board[2][2] == val ||
+                    board[0][0] == val && board[1][0] == val && board[2][0] == val ||
+                    board[0][1] == val && board[1][1] == val && board[2][1] == val ||
+                    board[0][2] == val && board[1][2] == val && board[2][2] == val ||
+                    board[0][2] == val && board[1][1] == val && board[2][0] == val ||
+                    board[0][0] == val && board[1][1] == val && board[2][2] == val);
+        }
+
+        private static boolean isImpossible (char[][] board, int numOfO, int numOfX){
+            return (numOfO - numOfX >=2 || numOfX - numOfO >= 2 ||
+                    board[0][0] == 'X' && board[0][1] == 'X' && board[0][2] == 'X' &&
+                    board[1][0] == 'O' && board[1][1] == 'O' && board[2][2] == 'O' ||
+                    board[0][0] == 'X' && board[1][0] == 'X' && board[2][0] == 'X' &&
+                    board[0][1] == 'O' && board[1][1] == 'O' && board[2][1] == 'O');
+        }
+
 }
 
 
