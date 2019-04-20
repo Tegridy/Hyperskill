@@ -6,7 +6,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter cells: ");
-        String cells = sc.nextLine().replaceAll("\"","");
+        String cells = sc.nextLine().replaceAll("\"", "");
         int numOfX = 0;
         int numOfO = 0;
 
@@ -24,13 +24,18 @@ public class Main {
             }
         }
 
-        System.out.println("---------");
-        for (char[] row : board) {
-            System.out.println(Arrays.toString(row).replaceAll("\\[", "| ")
-                    .replaceAll("]", " |").replaceAll(",", ""));
-        }
-        System.out.println("---------");
+        printBoard(board);
 
+        System.out.print("Enter the coordinates: ");
+        int coordY = sc.nextInt()-1;
+        int coordX = sc.nextInt();
+        coordX = setRow(coordX);
+
+        board[coordX][coordY] = 'X';
+
+        printBoard(board);
+    }
+        /*
         if (isImpossible(board, numOfO, numOfX))
             System.out.println("Impossible");
         else if(checkScore(board, 'X') )
@@ -61,8 +66,33 @@ public class Main {
                     board[0][0] == 'X' && board[1][0] == 'X' && board[2][0] == 'X' &&
                     board[0][1] == 'O' && board[1][1] == 'O' && board[2][1] == 'O');
         }
+        */
+        private static void printBoard ( char[][] board){
+            System.out.println("---------");
+            for (char[] row : board) {
+                System.out.println(Arrays.toString(row).replaceAll("\\[", "| ")
+                        .replaceAll("]", " |").replaceAll(",", ""));
+            }
+            System.out.println("---------");
+        }
 
-}
+        private static int setRow(int coordX){
+            switch (coordX){
+                case 1:
+                    coordX = 2;
+                    break;
+                case 2:
+                    coordX = 1;
+                    break;
+                case 3:
+                    coordX = 0;
+                    break;
+            }
+            return coordX;
+        }
+
+    }
+
 
 
 

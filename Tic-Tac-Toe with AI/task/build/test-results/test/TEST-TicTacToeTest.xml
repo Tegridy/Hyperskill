@@ -1,55 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="TicTacToeTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2019-04-19T18:57:22" hostname="yankes-MS-7816" time="0.044">
+<testsuite name="TicTacToeTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2019-04-20T18:54:27" hostname="yankes-MS-7816" time="0.067">
   <properties/>
-  <testcase name="start" classname="TicTacToeTest" time="0.044"/>
+  <testcase name="start" classname="TicTacToeTest" time="0.067"/>
   <system-out><![CDATA[Enter cells: ---------
-| X X X |
-| O O   |
+| X   X |
 |   O   |
+|       |
 ---------
-X wins
-Enter cells: ---------
-| X O X |
-| O X O |
-| X X O |
----------
-X wins
-Enter cells: ---------
-| X O O |
-| O X O |
-| X X O |
----------
-O wins
-Enter cells: ---------
-| X O X |
-| O O X |
-| X X O |
----------
-Draw
-Enter cells: ---------
+Enter the coordinates: ---------
+| X   X |
 | X O   |
-| O O X |
-|   X   |
+|       |
 ---------
-Game not finished
 Enter cells: ---------
-| X O   |
-| X O   |
-| X O X |
+| X   X |
+|   O   |
+|       |
 ---------
-Impossible
-Enter cells: ---------
+Enter the coordinates: ---------
+| X   X |
 |   O   |
 | X     |
-| X   X |
 ---------
-Impossible
 Enter cells: ---------
-|   O O |
-| O O   |
 | X   X |
+|   O   |
+|       |
 ---------
-Impossible
+Enter the coordinates: ---------
+| X   X |
+|   O X |
+|       |
+---------
+Enter cells: ---------
+| X   X |
+|   O   |
+|       |
+---------
+Enter the coordinates: ---------
+| X   X |
+|   O   |
+|   X   |
+---------
+Enter cells: ---------
+|   X X |
+| O O   |
+| O X   |
+---------
+Enter the coordinates: ---------
+| X X X |
+| O O   |
+| O X   |
+---------
+Enter cells: ---------
+|   X X |
+| O O   |
+| O X   |
+---------
+Enter the coordinates: ---------
+|   X X |
+| O O   |
+| O X X |
+---------
+Enter cells: ---------
+|   X X |
+| O O   |
+| O X   |
+---------
+Enter the coordinates: ---------
+|   X X |
+| O O X |
+| O X   |
+---------
 ]]></system-out>
   <system-err><![CDATA[Start test 1
 Start test 2
@@ -58,6 +80,5 @@ Start test 4
 Start test 5
 Start test 6
 Start test 7
-Start test 8
 ]]></system-err>
 </testsuite>
