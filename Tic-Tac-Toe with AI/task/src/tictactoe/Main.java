@@ -5,13 +5,16 @@ import java.util.*;
 public class Main {
     private static Scanner sc = new Scanner(System.in);
     private static char[][] board = new char[3][3];
+    private static Random randNum = new Random();
 
     public static void main(String[] args) {
 
         inputCells();
         printBoard();
-        inputPos();
-        //sc.close();
+
+           // inputPos();
+            easyMove();
+
     }
 
     /*
@@ -44,10 +47,7 @@ public class Main {
                 board[1][0] == 'O' && board[1][1] == 'O' && board[2][2] == 'O' ||
                 board[0][0] == 'X' && board[1][0] == 'X' && board[2][0] == 'X' &&
                 board[0][1] == 'O' && board[1][1] == 'O' && board[2][1] == 'O');
-    }System.out.print("Enter cells: ");
-        String cells = sc.nextLine().replaceAll("\"", "");
-        if(cells.length()<1) inputCells(cells);
-        else
+    }
     */
     private static void inputCells(){
         System.out.print("Enter cells: ");
@@ -99,27 +99,38 @@ public class Main {
     }
 
     private static void inputPos() {
-        do {
-            //System.out.print("Enter the coordinates: ");
-            try {
-                System.out.print("Enter the coordinates: ");
-                int posY = sc.nextInt() - 1;
-                int posX = sc.nextInt();
-                posX = setRow(posX);
-                if (posX > 2 || posX < 0 || posY > 2 || posY < 0) {
-                    System.out.println("Coordinates should be from 1 to 3!");
-                } else if (board[posX][posY] != ' ') {
-                    System.out.println("This cell is occupied! Choose another one!");
-                } else {
-                    board[posX][posY] = 'X';
-                    printBoard();
-                    break;
-                }
-            } catch (InputMismatchException e){
-                System.out.println("You should enter numbers!");
-                sc.nextLine();
-            }
-        } while (true);
+           do {
+               //System.out.print("Enter the coordinates: ");
+               try {
+                   System.out.print("Enter the coordinates: ");
+                   int posY = sc.nextInt() - 1;
+                   int posX = sc.nextInt();
+                   posX = setRow(posX);
+                   if (posX > 2 || posX < 0 || posY > 2 || posY < 0) {
+                       System.out.println("Coordinates should be from 1 to 3!");
+                   } else if (board[posX][posY] != ' ') {
+                       System.out.println("This cell is occupied! Choose another one!");
+                   } else {
+                       board[posX][posY] = 'X';
+                       printBoard();
+                       break;
+                   }
+               } catch (InputMismatchException e) {
+                   System.out.println("You should enter numbers!");
+                   sc.nextLine();
+               }
+           } while (true);
+       }
+
+
+       private static void easyMove(){
+           int y = randNum.nextInt(3) + 1;
+           int x = randNum.nextInt(3) + 1;
+           x = setRow(x);
+           System.out.println("Making move level \"easy\"");
+           board[x][y] = 'O';
+
+           printBoard();
     }
 }
 
