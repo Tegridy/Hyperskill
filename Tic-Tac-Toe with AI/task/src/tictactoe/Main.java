@@ -8,21 +8,24 @@ public class Main {
     private static Random randNum = new Random();
     private static int numOfX = 0;
     private static int numOfO = 0;
+    private static byte size = 9;
 
     public static void main(String[] args) {
 
         inputCells();
         printBoard();
-        //try {
             do {
                 inputPos();
+                if (checkWinner()){
+                    break;
+                }
                 easyMove();
-            } while (!checkWinner());
-//        } catch (ArrayIndexOutOfBoundsException e){
-//            System.out.println("Draw");
-//        }
+            } while (true);
     }
 
+    private static boolean getCommand(){
+        return true;
+    }
 
     private static boolean checkScore (char val) {
         return (board[0][0] == val && board[0][1] == val && board[0][2] == val ||
@@ -56,13 +59,13 @@ public class Main {
             System.out.println("O wins");
             return true;
         }
-        else if (numOfO == 4 && numOfX == 5 || numOfO == 5 && numOfX == 4) {
+        else if (size == 0){
             System.out.println("Draw");
             return true;
         }
 //        else
+            return false;
 //            System.out.println("Game not finished");
-        return false;
     }
 
     private static void inputCells(){
@@ -128,11 +131,14 @@ public class Main {
                        board[posX][posY] = 'X';
                        printBoard();
                        numOfX++;
+                       size--;
                        break;
                    }
                } catch (InputMismatchException e) {
                    System.out.println("You should enter numbers!");
                    sc.nextLine();
+               } catch (NoSuchElementException e){
+                   break;
                }
            } while (true);
        }
@@ -141,12 +147,15 @@ public class Main {
            int y = randNum.nextInt(3) + 1;
            int x = randNum.nextInt(3) + 1;
            x = setRow(x);
-           if(board[x][y-1] == ' ') {
-               System.out.println("Making move level \"easy\"");
-               board[x][y - 1] = 'O';
-               printBoard();
-               numOfO++;
-           }
+           if(board[x][y - 1] == ' ') {
+            System.out.println("Making move level \"easy\"");
+            board[x][y - 1] = 'O';
+            printBoard();
+            numOfO++;
+            size--;
+            } else {
+               easyMove();
+            }
     }
 }
 
