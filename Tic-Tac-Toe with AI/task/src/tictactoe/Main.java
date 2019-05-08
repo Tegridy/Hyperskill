@@ -6,25 +6,73 @@ public class Main {
     private static Scanner sc = new Scanner(System.in);
     private static char[][] board = new char[3][3];
     private static Random randNum = new Random();
-    private static int numOfX = 0;
-    private static int numOfO = 0;
+//    private static int numOfX = 0;
+//    private static int numOfO = 0;
     private static byte size = 9;
 
     public static void main(String[] args) {
-
-        inputCells();
-        printBoard();
-            do {
-                inputPos();
-                if (checkWinner()){
-                    break;
-                }
-                easyMove();
-            } while (true);
+        getCommand();
     }
 
-    private static boolean getCommand(){
-        return true;
+    private static void getCommand(){
+        do {
+           try {
+                System.out.print("Input command: ");
+                String[] commands = sc.nextLine().split("\\s+");
+                if (commands[0].equals("start")) {
+
+                    switch (commands[1] + " " + commands[2]) {
+                        case "user user":
+                            playerVSplayer();
+                            break;
+                        case "user easy":
+                            playerVSeasy(true);
+                            break;
+                        case "user medium":
+                            break;
+                        case "user hard":
+                            break;
+                        case "easy user":
+                            playerVSeasy(false);
+                            break;
+                        case "medium user":
+                            break;
+                        case "hard user":
+                            break;
+                        case "easy easy":
+                            easyVSeasy();
+                            break;
+                        case "medium medium":
+                            break;
+                        case "hard hard":
+                            break;
+                        case "easy hard":
+                            break;
+                        case "hard easy":
+                            break;
+                        case "easy medium":
+                            break;
+                        case "medium easy":
+                            break;
+                        case "medium hard":
+                            break;
+                        case "hard medium":
+                            break;
+//                        default:
+//                            System.out.println("Bad parameters!");
+//                            break;
+                    }
+//                } else if (commands[0].equals("exit")) {
+//                    System.exit(1);
+                } else {
+                    System.out.println("Bad parameters!");
+                    break;
+                }
+            } catch (NoSuchElementException e){
+               System.out.println("Bad parameters!");
+               break;
+           }
+        } while (true);
     }
 
     private static boolean checkScore (char val) {
@@ -38,13 +86,13 @@ public class Main {
                 board[0][0] == val && board[1][1] == val && board[2][2] == val);
     }
 
-    private static boolean isImpossible (){
-        return (numOfO - numOfX >=2 || numOfX - numOfO >= 2 ||
-                board[0][0] == 'X' && board[0][1] == 'X' && board[0][2] == 'X' &&
-                board[1][0] == 'O' && board[1][1] == 'O' && board[2][2] == 'O' ||
-                board[0][0] == 'X' && board[1][0] == 'X' && board[2][0] == 'X' &&
-                board[0][1] == 'O' && board[1][1] == 'O' && board[2][1] == 'O');
-    }
+//    private static boolean isImpossible (){
+//        return (numOfO - numOfX >=2 || numOfX - numOfO >= 2 ||
+//                board[0][0] == 'X' && board[0][1] == 'X' && board[0][2] == 'X' &&
+//                board[1][0] == 'O' && board[1][1] == 'O' && board[2][2] == 'O' ||
+//                board[0][0] == 'X' && board[1][0] == 'X' && board[2][0] == 'X' &&
+//                board[0][1] == 'O' && board[1][1] == 'O' && board[2][1] == 'O');
+//    }
 
     private static boolean checkWinner(){
 //        if (isImpossible()) {
@@ -53,14 +101,19 @@ public class Main {
 //        }
         if(checkScore('X')) {
             System.out.println("X wins");
+            sc.nextLine();
+            size = 9;
+            getCommand();
             return true;
         }
         else if (checkScore('O')) {
             System.out.println("O wins");
+            size = 9;
             return true;
         }
         else if (size == 0){
             System.out.println("Draw");
+            size = 9;
             return true;
         }
 //        else
@@ -68,26 +121,10 @@ public class Main {
 //            System.out.println("Game not finished");
     }
 
-    private static void inputCells(){
-//        System.out.print("Enter cells: ");
-//        String cells = sc.nextLine().replaceAll("\"", "");
-//        if(cells.length()<1) {
-//            inputCells();
-//        }
-//        else {
-
+    private static void setCells(){
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
                     board[i][j] = ' ';
-                    //char temp = cells.charAt(i * 3 + j);
-                    //if (temp == 'O') {
-                       // board[i][j] = temp;
-                       // numOfO++;
-                    //} else if (temp == 'X') {
-                    //    board[i][j] = temp;
-                    //    numOfX++;
-                    //} else if (temp == ' ') board[i][j] = temp;
-                //}
             }
         }
     }
@@ -116,7 +153,7 @@ public class Main {
         return posX;
     }
 
-    private static void inputPos() {
+    private static void inputPos(char symbol) {
            do {
                try {
                    System.out.print("Enter the coordinates: ");
@@ -128,9 +165,8 @@ public class Main {
                    } else if (board[posX][posY] != ' ') {
                        System.out.println("This cell is occupied! Choose another one!");
                    } else {
-                       board[posX][posY] = 'X';
+                       board[posX][posY] = symbol;
                        printBoard();
-                       numOfX++;
                        size--;
                        break;
                    }
@@ -143,19 +179,173 @@ public class Main {
            } while (true);
        }
 
-       private static void easyMove(){
+
+    private static void easyMove(char symbol){
            int y = randNum.nextInt(3) + 1;
            int x = randNum.nextInt(3) + 1;
            x = setRow(x);
            if(board[x][y - 1] == ' ') {
             System.out.println("Making move level \"easy\"");
-            board[x][y - 1] = 'O';
+            board[x][y - 1] = symbol;
             printBoard();
-            numOfO++;
             size--;
             } else {
-               easyMove();
+               easyMove('O');
             }
+    }
+
+    private static void playerVSplayer(){
+        setCells();
+        printBoard();
+    do {
+        inputPos('X');
+        if (checkWinner()){
+            break;
+        }
+        inputPos('O');
+    } while (true);
+    getCommand();
+    }
+
+    private static void playerVSeasy(boolean pStarts){
+        if(pStarts) {
+            setCells();
+            printBoard();
+            do {
+                inputPos('X');
+                if (checkWinner()) {
+                    break;
+                }
+                easyMove('O');
+                if (checkWinner()) {
+                    break;
+                }
+            } while (true);
+            getCommand();
+        } else {
+            setCells();
+            printBoard();
+            do {
+                easyMove('O');
+                if (checkWinner()) {
+                    break;
+                }
+                inputPos('X');
+                if (checkWinner()) {
+                    break;
+                }
+            } while (true);
+            getCommand();
+        }
+    }
+
+    private static void easyVSeasy(){
+        setCells();
+        printBoard();
+        do {
+            easyMove('O');
+            if (checkWinner()) {
+               break;
+            }
+            easyMove('X');
+            if (checkWinner()) {
+                break;
+            }
+        } while (true);
+    }
+
+    private static void playerVSmedium(boolean pStarts){
+        if(pStarts) {
+            setCells();
+            printBoard();
+            do {
+                inputPos('X');
+                if (checkWinner()) {
+                    break;
+                }
+                easyMove('O');
+                if (checkWinner()) {
+                    break;
+                }
+            } while (true);
+            getCommand();
+        } else {
+            setCells();
+            printBoard();
+            do {
+                easyMove('O');
+                if (checkWinner()) {
+                    break;
+                }
+                inputPos('X');
+                if (checkWinner()) {
+                    break;
+                }
+            } while (true);
+            getCommand();
+        }
+    }
+
+    private static void mediumVSmedium(){
+        setCells();
+        printBoard();
+        do {
+            easyMove('O');
+            if (checkWinner()) {
+                break;
+            }
+            easyMove('X');
+            if (checkWinner()) {
+                break;
+            }
+        } while (true);
+    }
+
+    private static void playerVShard(boolean pStarts){
+        if(pStarts) {
+            setCells();
+            printBoard();
+            do {
+                inputPos('X');
+                if (checkWinner()) {
+                    break;
+                }
+                easyMove('O');
+                if (checkWinner()) {
+                    break;
+                }
+            } while (true);
+            getCommand();
+        } else {
+            setCells();
+            printBoard();
+            do {
+                easyMove('O');
+                if (checkWinner()) {
+                    break;
+                }
+                inputPos('X');
+                if (checkWinner()) {
+                    break;
+                }
+            } while (true);
+            getCommand();
+        }
+    }
+
+    private static void hardVShard(){
+        setCells();
+        printBoard();
+        do {
+            easyMove('O');
+            if (checkWinner()) {
+                break;
+            }
+            easyMove('X');
+            if (checkWinner()) {
+                break;
+            }
+        } while (true);
     }
 }
 

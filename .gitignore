@@ -5,5 +5,5 @@ gradle/
 gradlew
 gradlew.bat
 settings.gradle
-build/
-out/
+Tic-Tac-Toe with AI/task/build/
+Tic-Tac-Toe with AI/task/out/
