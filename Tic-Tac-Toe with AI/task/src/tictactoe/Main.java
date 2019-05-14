@@ -15,7 +15,6 @@ public class Main {
     }
 
     private static void getCommand(){
-        do {
            try {
                 System.out.print("Input command: ");
                 String[] commands = sc.nextLine().split("\\s+");
@@ -29,6 +28,7 @@ public class Main {
                             playerVSeasy(true);
                             break;
                         case "user medium":
+                            playerVSmedium(true);
                             break;
                         case "user hard":
                             break;
@@ -36,6 +36,7 @@ public class Main {
                             playerVSeasy(false);
                             break;
                         case "medium user":
+                            playerVSmedium(false);
                             break;
                         case "hard user":
                             break;
@@ -43,6 +44,7 @@ public class Main {
                             easyVSeasy();
                             break;
                         case "medium medium":
+                            mediumVSmedium();
                             break;
                         case "hard hard":
                             break;
@@ -51,28 +53,27 @@ public class Main {
                         case "hard easy":
                             break;
                         case "easy medium":
+                            mediumVSmedium();
                             break;
                         case "medium easy":
+                            mediumVSmedium();
                             break;
                         case "medium hard":
                             break;
                         case "hard medium":
                             break;
-//                        default:
-//                            System.out.println("Bad parameters!");
-//                            break;
+                        default:
+                                System.out.println("Bad parameters! in switch");
+                            break;
                     }
 //                } else if (commands[0].equals("exit")) {
 //                    System.exit(1);
                 } else {
-                    System.out.println("Bad parameters!");
-                    break;
+                    System.out.println("Bad parameters! in else");
                 }
             } catch (NoSuchElementException e){
-               System.out.println("Bad parameters!");
-               break;
-           }
-        } while (true);
+
+            }
     }
 
     private static boolean checkScore (char val) {
@@ -101,22 +102,26 @@ public class Main {
 //        }
         if(checkScore('X')) {
             System.out.println("X wins");
-            sc.nextLine();
             size = 9;
+            //sc.nextLine();
             getCommand();
             return true;
         }
         else if (checkScore('O')) {
             System.out.println("O wins");
             size = 9;
+            //sc.nextLine();
+            getCommand();
             return true;
         }
         else if (size == 0){
             System.out.println("Draw");
+            //sc.nextLine();
             size = 9;
+            getCommand();
             return true;
         }
-//        else
+        else
             return false;
 //            System.out.println("Game not finished");
     }
@@ -180,17 +185,17 @@ public class Main {
        }
 
 
-    private static void easyMove(char symbol){
+    private static void easy_mediumMove(char symbol, String bot){
            int y = randNum.nextInt(3) + 1;
            int x = randNum.nextInt(3) + 1;
            x = setRow(x);
            if(board[x][y - 1] == ' ') {
-            System.out.println("Making move level \"easy\"");
+            System.out.println("Making move level \""+bot+"\"");
             board[x][y - 1] = symbol;
             printBoard();
             size--;
             } else {
-               easyMove('O');
+               easy_mediumMove('O', bot);
             }
     }
 
@@ -204,7 +209,6 @@ public class Main {
         }
         inputPos('O');
     } while (true);
-    getCommand();
     }
 
     private static void playerVSeasy(boolean pStarts){
@@ -216,17 +220,17 @@ public class Main {
                 if (checkWinner()) {
                     break;
                 }
-                easyMove('O');
+                easy_mediumMove('O', "easy");
                 if (checkWinner()) {
                     break;
                 }
             } while (true);
-            getCommand();
+
         } else {
             setCells();
             printBoard();
             do {
-                easyMove('O');
+                easy_mediumMove('O', "easy");
                 if (checkWinner()) {
                     break;
                 }
@@ -235,7 +239,7 @@ public class Main {
                     break;
                 }
             } while (true);
-            getCommand();
+
         }
     }
 
@@ -243,11 +247,11 @@ public class Main {
         setCells();
         printBoard();
         do {
-            easyMove('O');
+            easy_mediumMove('O', "easy");
             if (checkWinner()) {
                break;
             }
-            easyMove('X');
+            easy_mediumMove('X', "easy");
             if (checkWinner()) {
                 break;
             }
@@ -255,51 +259,164 @@ public class Main {
     }
 
     private static void playerVSmedium(boolean pStarts){
-        if(pStarts) {
-            setCells();
-            printBoard();
-            do {
+        setCells();
+        printBoard();
+
+        do {
+            if (pStarts) {
                 inputPos('X');
-                if (checkWinner()) {
-                    break;
+                if (checkWinner()) break;
+                // Checking if X can win and tries to block otherwise trying to win
+                if (findImmediateWin('X') != null) {
+                    int[] xy = findImmediateWin('X');
+                    System.out.println("Making move level \"medium\"");
+                    board[xy[0]][xy[1]] = 'O';
+                    size--;
+                    printBoard();
+                    if (checkWinner()) break;
+                } else if (findImmediateWin('O') != null) {
+                    int[] xy = findImmediateWin('O');
+                    System.out.println("Making move level \"medium\"");
+                    board[xy[0]][xy[1]] = 'O';
+                    size--;
+                    printBoard();
+                    if (checkWinner()) break;
+                } else {
+                    easy_mediumMove('O', "medium");
+                    if (checkWinner()) break;
                 }
-                easyMove('O');
-                if (checkWinner()) {
-                    break;
-                }
-            } while (true);
-            getCommand();
-        } else {
-            setCells();
-            printBoard();
-            do {
-                easyMove('O');
-                if (checkWinner()) {
-                    break;
+            } else {
+                if (findImmediateWin('X') != null) {
+                    int[] xy = findImmediateWin('X');
+                    System.out.println("Making move level \"medium\"");
+                    board[xy[0]][xy[1]] = 'O';
+                    size--;
+                    printBoard();
+                    if (checkWinner()) break;
+                } else if (findImmediateWin('O') != null) {
+                    int[] xy = findImmediateWin('O');
+                    System.out.println("Making move level \"medium\"");
+                    board[xy[0]][xy[1]] = 'O';
+                    size--;
+                    printBoard();
+                    if (checkWinner()) break;
+                } else {
+                    easy_mediumMove('O', "medium");
+                    if (checkWinner()) break;
                 }
                 inputPos('X');
-                if (checkWinner()) {
-                    break;
-                }
-            } while (true);
-            getCommand();
-        }
+                if (checkWinner()) break;
+            }
+        } while (true);
     }
 
     private static void mediumVSmedium(){
         setCells();
         printBoard();
+        char symbol = 'X';
         do {
-            easyMove('O');
-            if (checkWinner()) {
-                break;
+            if (findImmediateWin('X') != null) {
+                int[] xy = findImmediateWin('X');
+                System.out.println("Making move level \"medium\"");
+                board[xy[0]][xy[1]] = symbol;
+                size--;
+                printBoard();
+                if (checkWinner()) break;
+            } else if (findImmediateWin('O') != null) {
+                int[] xy = findImmediateWin('O');
+                System.out.println("Making move level \"medium\"");
+                board[xy[0]][xy[1]] = symbol;
+                size--;
+                printBoard();
+                if (checkWinner()) break;
+            } else {
+                easy_mediumMove(symbol, "medium");
+                if (checkWinner()) break;
             }
-            easyMove('X');
-            if (checkWinner()) {
-                break;
-            }
+            if(symbol == 'X') symbol = 'O';
+            else symbol = 'X';
         } while (true);
     }
+
+    private static int[] findImmediateWin(char symbol) {
+        int counterOfSymbol;
+        int counterOfEmptyCells;
+        int posX = 0;
+        int posY = 0;
+
+        // Searching for rows
+        for (int i = 0; i < 3; i++) {
+            counterOfSymbol = 0;
+            counterOfEmptyCells = 0;
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == symbol) {
+                    counterOfSymbol++;
+                } else if (board[i][j] == ' ') {
+                    counterOfEmptyCells++;
+                    posX = i;
+                    posY = j;
+                }
+            }
+            if (counterOfSymbol == 2 && counterOfEmptyCells == 1) {
+                return new int[]{posX, posY};
+            }
+        }
+
+        // Searching for columns
+        for (int i = 0; i < 3; i++) {
+            counterOfSymbol = 0;
+            counterOfEmptyCells = 0;
+            for (int j = 0; j < 3; j++) {
+                if (board[j][i] == symbol) {
+                    counterOfSymbol++;
+                } else if (board[j][i] == ' ') {
+                    counterOfEmptyCells++;
+                    posX = j;
+                    posY = i;
+                }
+            }
+            if (counterOfSymbol == 2 && counterOfEmptyCells == 1) {
+                return new int[]{posX, posY};
+            }
+        }
+
+        // Searching for main diagonal
+        counterOfSymbol = 0;
+        counterOfEmptyCells = 0;
+        for (int i = 0; i < 3; i++) {
+            if (board[i][i] == symbol) {
+                counterOfSymbol++;
+            } else if (board[i][i] == ' ') {
+                counterOfEmptyCells++;
+                posX = i;
+                posY = i;
+            }
+        }
+        if (counterOfSymbol == 2 && counterOfEmptyCells == 1) {
+            return new int[]{posX, posY};
+        }
+
+        // Searching for side diagonal
+        counterOfSymbol = 0;
+        counterOfEmptyCells = 0;
+        for (int i = 0; i < 3; i++) {
+            if (board[i][2-i] == symbol) {
+                counterOfSymbol++;
+            } else if (board[i][2-i] == ' ') {
+                counterOfEmptyCells++;
+                posX = i;
+                posY = 2-i;
+            }
+        }
+        if (counterOfSymbol == 2 && counterOfEmptyCells == 1) {
+            return new int[]{posX, posY};
+        }
+
+        // If nothing was found
+        return null;
+    }
+
+
 
     private static void playerVShard(boolean pStarts){
         if(pStarts) {
@@ -310,17 +427,17 @@ public class Main {
                 if (checkWinner()) {
                     break;
                 }
-                easyMove('O');
+                easy_mediumMove('O', "medium");
                 if (checkWinner()) {
                     break;
                 }
             } while (true);
-            getCommand();
+
         } else {
             setCells();
             printBoard();
             do {
-                easyMove('O');
+                easy_mediumMove('O', "");
                 if (checkWinner()) {
                     break;
                 }
@@ -329,7 +446,6 @@ public class Main {
                     break;
                 }
             } while (true);
-            getCommand();
         }
     }
 
@@ -337,11 +453,11 @@ public class Main {
         setCells();
         printBoard();
         do {
-            easyMove('O');
+            easy_mediumMove('O', "medium");
             if (checkWinner()) {
                 break;
             }
-            easyMove('X');
+            easy_mediumMove('X', "medium");
             if (checkWinner()) {
                 break;
             }
