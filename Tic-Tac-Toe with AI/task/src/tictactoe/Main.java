@@ -2,81 +2,97 @@ package tictactoe;
 
 import java.util.*;
 
+class Cell {
+    int x, y;
+    public Cell(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+    @Override
+    public String toString() {
+        return "[" + x + ", " + y + "]";
+    }
+}
+
 public class Main {
+    private static List<Cell> availableCells;
+    private static int depth = 0;
     private static Scanner sc = new Scanner(System.in);
     private static char[][] board = new char[3][3];
     private static Random randNum = new Random();
-//    private static int numOfX = 0;
-//    private static int numOfO = 0;
     private static byte size = 9;
 
     public static void main(String[] args) {
+        setCells();
         getCommand();
     }
 
-    private static void getCommand(){
-           try {
-                System.out.print("Input command: ");
-                String[] commands = sc.nextLine().split("\\s+");
-                if (commands[0].equals("start")) {
+    private static void getCommand() {
+        System.out.print("Input command: ");
+        String[] commands = sc.nextLine().split("\\s+");
+        if (commands[0].equals("start")) {
 
-                    switch (commands[1] + " " + commands[2]) {
-                        case "user user":
-                            playerVSplayer();
-                            break;
-                        case "user easy":
-                            playerVSeasy(true);
-                            break;
-                        case "user medium":
-                            playerVSmedium(true);
-                            break;
-                        case "user hard":
-                            break;
-                        case "easy user":
-                            playerVSeasy(false);
-                            break;
-                        case "medium user":
-                            playerVSmedium(false);
-                            break;
-                        case "hard user":
-                            break;
-                        case "easy easy":
-                            easyVSeasy();
-                            break;
-                        case "medium medium":
-                            mediumVSmedium();
-                            break;
-                        case "hard hard":
-                            break;
-                        case "easy hard":
-                            break;
-                        case "hard easy":
-                            break;
-                        case "easy medium":
-                            mediumVSmedium();
-                            break;
-                        case "medium easy":
-                            mediumVSmedium();
-                            break;
-                        case "medium hard":
-                            break;
-                        case "hard medium":
-                            break;
-                        default:
-                                System.out.println("Bad parameters! in switch");
-                            break;
-                    }
+            switch (commands[1] + " " + commands[2]) {
+                case "user user":
+                    playerVSplayer();
+                    break;
+                case "user easy":
+                    playerVSeasy(true);
+                    break;
+                case "user medium":
+                    playerVSmedium(true);
+                    break;
+                case "user hard":
+                    playerVShard(true);
+                    break;
+                case "easy user":
+                    playerVSeasy(false);
+                    break;
+                case "medium user":
+                    playerVSmedium(true);
+                    break;
+                case "hard user":
+                    playerVShard(false);
+                    break;
+                case "easy easy":
+                    easyVSeasy();
+                    break;
+                case "medium medium":
+                    mediumVSmedium();
+                    break;
+                case "hard hard":
+                    hardVShard();
+                    break;
+                case "easy hard":
+                    mediumVSmedium();
+                    break;
+                case "hard easy":
+                    mediumVSmedium();
+                    break;
+                case "easy medium":
+                    mediumVSmedium();
+                    break;
+                case "medium easy":
+                    mediumVSmedium();
+                    break;
+                case "medium hard":
+                    mediumVSmedium();
+                    break;
+                case "hard medium":
+                    mediumVSmedium();
+                    break;
+                default:
+                    System.out.println("Bad parameters! in switch");
+                    break;
+            }
 //                } else if (commands[0].equals("exit")) {
 //                    System.exit(1);
-                } else {
-                    System.out.println("Bad parameters! in else");
-                }
-            } catch (NoSuchElementException e){
-
-            }
+        } else {
+            System.out.println("Bad parameters! in else");
+        }
     }
 
-    private static boolean checkScore (char val) {
+    private static boolean checkScore(char val) {
         return (board[0][0] == val && board[0][1] == val && board[0][2] == val ||
                 board[1][0] == val && board[1][1] == val && board[1][2] == val ||
                 board[2][0] == val && board[2][1] == val && board[2][2] == val ||
@@ -87,49 +103,30 @@ public class Main {
                 board[0][0] == val && board[1][1] == val && board[2][2] == val);
     }
 
-//    private static boolean isImpossible (){
-//        return (numOfO - numOfX >=2 || numOfX - numOfO >= 2 ||
-//                board[0][0] == 'X' && board[0][1] == 'X' && board[0][2] == 'X' &&
-//                board[1][0] == 'O' && board[1][1] == 'O' && board[2][2] == 'O' ||
-//                board[0][0] == 'X' && board[1][0] == 'X' && board[2][0] == 'X' &&
-//                board[0][1] == 'O' && board[1][1] == 'O' && board[2][1] == 'O');
-//    }
-
-    private static boolean checkWinner(){
-//        if (isImpossible()) {
-//            System.out.println("Impossible");
-//            return true;
-//        }
-        if(checkScore('X')) {
+    private static boolean checkWinner() {
+        if (checkScore('X')) {
             System.out.println("X wins");
             size = 9;
-            //sc.nextLine();
             getCommand();
             return true;
-        }
-        else if (checkScore('O')) {
+        } else if (checkScore('O')) {
             System.out.println("O wins");
             size = 9;
-            //sc.nextLine();
             getCommand();
             return true;
-        }
-        else if (size == 0){
+        } else if (size == 0) {
             System.out.println("Draw");
-            //sc.nextLine();
             size = 9;
             getCommand();
             return true;
-        }
-        else
+        } else
             return false;
-//            System.out.println("Game not finished");
     }
 
-    private static void setCells(){
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    board[i][j] = ' ';
+    private static void setCells() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                board[i][j] = ' ';
             }
         }
     }
@@ -159,60 +156,60 @@ public class Main {
     }
 
     private static void inputPos(char symbol) {
-           do {
-               try {
-                   System.out.print("Enter the coordinates: ");
-                   int posY = sc.nextInt() - 1;
-                   int posX = sc.nextInt();
-                   posX = setRow(posX);
-                   if (posX > 2 || posX < 0 || posY > 2 || posY < 0) {
-                       System.out.println("Coordinates should be from 1 to 3!");
-                   } else if (board[posX][posY] != ' ') {
-                       System.out.println("This cell is occupied! Choose another one!");
-                   } else {
-                       board[posX][posY] = symbol;
-                       printBoard();
-                       size--;
-                       break;
-                   }
-               } catch (InputMismatchException e) {
-                   System.out.println("You should enter numbers!");
-                   sc.nextLine();
-               } catch (NoSuchElementException e){
-                   break;
-               }
-           } while (true);
-       }
+        do {
+            try {
+                System.out.print("Enter the coordinates: ");
+                int posY = sc.nextInt() - 1;
+                int posX = sc.nextInt();
+                posX = setRow(posX);
+                if (posX > 2 || posX < 0 || posY > 2 || posY < 0) {
+                    System.out.println("Coordinates should be from 1 to 3!");
+                } else if (board[posX][posY] != ' ') {
+                    System.out.println("This cell is occupied! Choose another one!");
+                } else {
+                    board[posX][posY] = symbol;
+                    printBoard();
+                    size--;
+                    break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("You should enter numbers!");
+                sc.nextLine();
+            } catch (NoSuchElementException e) {
+                break;
+            }
+        } while (true);
+    }
 
 
-    private static void easy_mediumMove(char symbol, String bot){
-           int y = randNum.nextInt(3) + 1;
-           int x = randNum.nextInt(3) + 1;
-           x = setRow(x);
-           if(board[x][y - 1] == ' ') {
-            System.out.println("Making move level \""+bot+"\"");
+    private static void easy_mediumMove(char symbol, String bot) {
+        int y = randNum.nextInt(3) + 1;
+        int x = randNum.nextInt(3) + 1;
+        x = setRow(x);
+        if (board[x][y - 1] == ' ') {
+            System.out.println("Making move level \"" + bot + "\"");
             board[x][y - 1] = symbol;
             printBoard();
             size--;
-            } else {
-               easy_mediumMove('O', bot);
-            }
+        } else {
+            easy_mediumMove('O', bot);
+        }
     }
 
-    private static void playerVSplayer(){
+    private static void playerVSplayer() {
         setCells();
         printBoard();
-    do {
-        inputPos('X');
-        if (checkWinner()){
-            break;
-        }
-        inputPos('O');
-    } while (true);
+        do {
+            inputPos('X');
+            if (checkWinner()) {
+                break;
+            }
+            inputPos('O');
+        } while (true);
     }
 
-    private static void playerVSeasy(boolean pStarts){
-        if(pStarts) {
+    private static void playerVSeasy(boolean pStarts) {
+        if (pStarts) {
             setCells();
             printBoard();
             do {
@@ -243,13 +240,13 @@ public class Main {
         }
     }
 
-    private static void easyVSeasy(){
+    private static void easyVSeasy() {
         setCells();
         printBoard();
         do {
             easy_mediumMove('O', "easy");
             if (checkWinner()) {
-               break;
+                break;
             }
             easy_mediumMove('X', "easy");
             if (checkWinner()) {
@@ -258,7 +255,7 @@ public class Main {
         } while (true);
     }
 
-    private static void playerVSmedium(boolean pStarts){
+    private static void playerVSmedium(boolean pStarts) {
         setCells();
         printBoard();
 
@@ -310,7 +307,7 @@ public class Main {
         } while (true);
     }
 
-    private static void mediumVSmedium(){
+    private static void mediumVSmedium() {
         setCells();
         printBoard();
         char symbol = 'X';
@@ -333,7 +330,7 @@ public class Main {
                 easy_mediumMove(symbol, "medium");
                 if (checkWinner()) break;
             }
-            if(symbol == 'X') symbol = 'O';
+            if (symbol == 'X') symbol = 'O';
             else symbol = 'X';
         } while (true);
     }
@@ -400,12 +397,12 @@ public class Main {
         counterOfSymbol = 0;
         counterOfEmptyCells = 0;
         for (int i = 0; i < 3; i++) {
-            if (board[i][2-i] == symbol) {
+            if (board[i][2 - i] == symbol) {
                 counterOfSymbol++;
-            } else if (board[i][2-i] == ' ') {
+            } else if (board[i][2 - i] == ' ') {
                 counterOfEmptyCells++;
                 posX = i;
-                posY = 2-i;
+                posY = 2 - i;
             }
         }
         if (counterOfSymbol == 2 && counterOfEmptyCells == 1) {
@@ -416,10 +413,55 @@ public class Main {
         return null;
     }
 
+    public static List<Cell> getAvailableStates() {
+        availableCells = new ArrayList<>();
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) {
+                if (board[i][j] == ' ') {
+                    availableCells.add(new Cell(i, j));
+                }
+            }
+        }
+        return availableCells;
+    }
 
+    public static void placeAMove(Cell point, char player) {
+        board[point.x][point.y] = player; //player = 1 for X, 2 for O
+        size--;
+        printBoard();
+    }
 
-    private static void playerVShard(boolean pStarts){
-        if(pStarts) {
+    private static int minimax(char turn) {
+        if (checkScore('X')) return +1;
+        if (checkScore('O')) return -1;
+
+        List<Cell> cellsAvailable = getAvailableStates();
+        if (cellsAvailable.isEmpty()) return 0;
+
+        int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
+
+        for (int i = 0; i < cellsAvailable.size(); ++i) {
+            Cell cell = cellsAvailable.get(i);
+            if (turn == 2 && board[cell.x][cell.y] == ' ') {
+                System.out.println("Making move level \"hard\"");
+                placeAMove(cell, 'O');
+                depth++;
+                int currentScore = minimax('X');
+                min = Math.min(currentScore, min);
+                if (min == -1) {
+                    board[cell.x][cell.y] = 'O';
+                    size--;
+                    printBoard();
+                    break;
+                }
+                break;
+            }
+        }
+        return turn == 1 ? max : min;
+    }
+
+    private static void playerVShard(boolean pStarts) {
+        if (pStarts) {
             setCells();
             printBoard();
             do {
@@ -427,7 +469,7 @@ public class Main {
                 if (checkWinner()) {
                     break;
                 }
-                easy_mediumMove('O', "medium");
+                minimax('O');
                 if (checkWinner()) {
                     break;
                 }
@@ -437,7 +479,7 @@ public class Main {
             setCells();
             printBoard();
             do {
-                easy_mediumMove('O', "");
+                minimax('O');
                 if (checkWinner()) {
                     break;
                 }
@@ -449,21 +491,22 @@ public class Main {
         }
     }
 
-    private static void hardVShard(){
+    private static void hardVShard() {
         setCells();
         printBoard();
         do {
-            easy_mediumMove('O', "medium");
+            minimax('X');
             if (checkWinner()) {
                 break;
             }
-            easy_mediumMove('X', "medium");
+            minimax('O');
             if (checkWinner()) {
                 break;
             }
         } while (true);
     }
 }
+
 
 
 
