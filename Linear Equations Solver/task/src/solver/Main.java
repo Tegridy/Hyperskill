@@ -11,5 +11,7 @@ public class Main {
     double b = sc.nextDouble();
 
     System.out.println(b/a);
+
+
     }
 }

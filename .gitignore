@@ -3,9 +3,15 @@
 build.gradle
 gradle/
 gradlew
+gradlew
 gradlew.bat
 settings.gradle
 Tic-Tac-Toe with AI/task/build/
 Tic-Tac-Toe with AI/task/out/
+<<<<<<< HEAD
 Linear Equations Solver/task/build/
 Linear Equations Solver/task/out/
+=======
+>>>>>>> origin/master
+
+
