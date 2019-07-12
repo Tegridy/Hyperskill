@@ -1,31 +1,60 @@
 package encryptdecrypt;
 
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
 
     private static Scanner sc = new Scanner(System.in);
-    //private static String alphabet = "abcdefghijklmnopqrstuvwxyz";
-
 
     public static void main(String[] args) {
-        String command = sc.nextLine();
 
-        switch (command){
+        String str = "";
+        int key = 0;
+        String mode = "";
+
+        for (int i = 0; i < args.length; i++) {
+            switch (args[i]){
+                case "-mode":
+                    if (i + 1 < args.length && args[i+1].equals("dec")){
+                        mode = "dec";
+                    } else {
+                        mode = "enc";
+                    }
+                    break;
+                case "-key":
+
+                    if (args[i+1].isBlank() || args[i+1].matches("-\\w+")){
+                        key = sc.nextInt();
+                    }
+                    else {
+                        key = Integer.parseInt(args[i + 1]);
+                    }
+                    break;
+                case "-data":
+                    if (args[i+1].isBlank() || args[i+1].matches("-\\w+")){
+                        str = sc.next();
+                    } else {
+                        str = args[i + 1];
+                    }
+                    break;
+            }
+        }
+
+        switch (mode) {
             case "enc":
-                encrypt();
+                encrypt(str, key);
                 break;
             case "dec":
-                decrypt();
+                decrypt(str, key);
                 break;
         }
+
     }
 
 
-    private static void encrypt(){
-        String str = sc.nextLine();
-        int key = Integer.parseInt(sc.nextLine());
+    private static void encrypt(String str, int key){
 
         char[] strArr = str.toCharArray();
 
@@ -36,9 +65,7 @@ public class Main {
         System.out.println(new String(strArr));
     }
 
-    private static void decrypt(){
-        String str = sc.nextLine();
-        int key = Integer.parseInt(sc.nextLine());
+    private static void decrypt(String str, int key){
 
         key *= -1;
 
@@ -49,6 +76,5 @@ public class Main {
         }
 
         System.out.println(result.toString());
-
     }
 }
