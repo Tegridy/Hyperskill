@@ -1,18 +1,23 @@
 package encryptdecrypt;
 
 
-import java.util.Arrays;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.Scanner;
 
 public class Main {
 
     private static Scanner sc = new Scanner(System.in);
+    private static String filePath;
 
     public static void main(String[] args) {
 
         String str = "";
         int key = 0;
         String mode = "";
+
+
+        boolean arg = false;
 
         for (int i = 0; i < args.length; i++) {
             switch (args[i]){
@@ -24,7 +29,6 @@ public class Main {
                     }
                     break;
                 case "-key":
-
                     if (args[i+1].isBlank() || args[i+1].matches("-\\w+")){
                         key = sc.nextInt();
                     }
@@ -39,33 +43,66 @@ public class Main {
                         str = args[i + 1];
                     }
                     break;
+                case "-in":
+                    if (args[i+1].isBlank() || args[i+1].matches("-\\w+")){
+                        str = sc.nextLine();
+                    } else {
+                        filePath = args[i + 1];
+
+                        File file = new File(filePath);
+
+                        try (Scanner scan = new Scanner(file)) {
+                            str = scan.nextLine();
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                    break;
+                case "-out":
+                    if (args[i+1].isBlank() || args[i+1].matches("-\\w+")){
+                        arg = false;
+                    } else {
+                        arg = true;
+                        filePath = args[i + 1];
+                    }
+                    break;
             }
         }
 
         switch (mode) {
             case "enc":
-                encrypt(str, key);
+                encrypt(str, key, arg);
                 break;
             case "dec":
-                decrypt(str, key);
+                decrypt(str, key, arg);
                 break;
         }
 
     }
 
 
-    private static void encrypt(String str, int key){
+    private static void encrypt(String str, int key, boolean arg){
 
         char[] strArr = str.toCharArray();
 
         for(int i = 0; i < strArr.length; ++i){
             strArr[i] = (char)(strArr[i] + key);
         }
+        if (arg && !filePath.isBlank()){
+            File file = new File(filePath);
 
-        System.out.println(new String(strArr));
-    }
+            try (FileWriter writer = new FileWriter(file)) {
+                writer.write(new String(strArr));
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
 
-    private static void decrypt(String str, int key){
+        } else {
+            System.out.println(new String(strArr));
+            }
+        }
+
+    private static void decrypt(String str, int key, boolean arg){
 
         key *= -1;
 
@@ -75,6 +112,18 @@ public class Main {
             result.append((char)(c+key));
         }
 
-        System.out.println(result.toString());
+        if (arg && !filePath.isBlank()){
+            File file = new File(filePath);
+
+            try (FileWriter writer = new FileWriter(file)) {
+                writer.write(result.toString());
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+        } else {
+            System.out.println(result.toString());
+        }
     }
-}
+    }
+
