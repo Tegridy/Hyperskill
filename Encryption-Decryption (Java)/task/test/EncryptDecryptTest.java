@@ -16,6 +16,7 @@ public class EncryptDecryptTest extends BaseStageTest<String> {
         return List.of(
             new TestCase<String>()
                 .addArguments(new String[]{
+                    "-alg", "unicode",
                     "-mode", "enc",
                     "-key", "5",
                     "-in", "in.txt",
@@ -28,6 +29,7 @@ public class EncryptDecryptTest extends BaseStageTest<String> {
                 .addArguments(new String[]{
                     "-key", "0",
                     "-mode", "enc",
+                    "-alg", "unicode",
                     "-in", "input.txt",
                     "-out", "output.txt"
                 })
@@ -38,6 +40,7 @@ public class EncryptDecryptTest extends BaseStageTest<String> {
                 .addArguments(new String[]{
                     "-key", "1",
                     "-in", "i.txt",
+                    "-alg", "unicode",
                     "-out", "output.txt",
                     "-mode", "enc"
                 })
@@ -49,6 +52,7 @@ public class EncryptDecryptTest extends BaseStageTest<String> {
                     "-mode", "dec",
                     "-in", "input.txt",
                     "-out", "output.txt",
+                    "-alg", "unicode",
                     "-key", "5"
                 })
                 .setAttach("Welcome to hyperskill!")
@@ -57,6 +61,7 @@ public class EncryptDecryptTest extends BaseStageTest<String> {
             new TestCase<String>()
                 .addArguments(new String[]{
                     "-mode", "dec",
+                    "-alg", "unicode",
                     "-key", "0",
                     "-in", "input.txt",
                     "-out", "output.txt"
@@ -69,10 +74,66 @@ public class EncryptDecryptTest extends BaseStageTest<String> {
                     "-mode", "dec",
                     "-key", "1",
                     "-in", "input.txt",
+                    "-alg", "unicode",
                     "-out", "output.txt"
                 })
                 .setAttach("111122223333")
-                .addFile("input.txt", "222233334444")
+                .addFile("input.txt", "222233334444"),
+
+            new TestCase<String>()
+                .addArguments(new String[]{
+                    "-mode", "enc",
+                    "-key", "5",
+                    "-in", "input.txt",
+                    "-alg", "shift",
+                    "-out", "output.txt"
+                })
+                .setAttach("bjqhtrj yt mdujwxpnqq")
+                .addFile("input.txt", "welcome to hyperskill"),
+
+            new TestCase<String>()
+                .addArguments(new String[]{
+                    "-mode", "dec",
+                    "-key", "10",
+                    "-in", "input.txt",
+                    "-alg", "shift",
+                    "-out", "output.txt"
+                })
+                .setAttach("treasure")
+                .addFile("input.txt", "dbokcebo"),
+
+            new TestCase<String>()
+                .addArguments(new String[]{
+                    "-mode", "enc",
+                    "-key", "12",
+                    "-in", "input.txt",
+                    "-alg", "shift",
+                    "-out", "output.txt"
+                })
+                .setAttach("cphpchdjcijdjibhdjebhjucspucmdmudbnuccup")
+                .addFile("input.txt", "qdvdqvrxqwxrxwpvrxspvxiqgdiqarairpbiqqid"),
+
+            new TestCase<String>()
+                .addArguments(new String[]{
+                    "-mode", "dec",
+                    "-key", "10",
+                    "-in", "input.txt",
+                    "-alg", "shift",
+                    "-out", "output.txt"
+                })
+                .setAttach("y")
+                .addFile("input.txt", "i"),
+
+            new TestCase<String>()
+                .addArguments(new String[]{
+                    "-mode", "enc",
+                    "-key", "10",
+                    "-in", "input.txt",
+                    "-alg", "shift",
+                    "-out", "output.txt"
+                })
+                .setAttach("i")
+                .addFile("input.txt", "y")
         );
     }
 
@@ -81,4 +142,5 @@ public class EncryptDecryptTest extends BaseStageTest<String> {
         String output = Utils.readFile("output.txt");
         return new CheckResult(output.trim().equals(clue.trim()));
     }
+
 }
