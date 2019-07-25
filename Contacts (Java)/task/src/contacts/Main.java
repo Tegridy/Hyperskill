@@ -1,22 +1,54 @@
 package contacts;
 
-
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
 
-    private static Scanner sc = new Scanner(System.in);
+
 
     public static void main(String[] args) {
-        System.out.println("Enter the name of the person:");
-        String name = sc.nextLine();
-        System.out.println("Enter the surname of the person:");
-        String surname = sc.nextLine();
-        System.out.println("Enter the number:");
-        String phoneNumber = sc.nextLine();
+        Scanner sc = new Scanner(System.in);
 
-        Contact p1 = new Contact(name, surname, phoneNumber);
-        ContactBook book = new ContactBook(p1);
-        book.addContact(p1);
+        char quit = 'x';
+
+        while (quit != 'q') {
+            System.out.print("Enter action (add, remove, edit, count, list, exit): ");
+            String command = sc.nextLine();
+            switch (command) {
+                case "add":
+                    System.out.print("Enter the name: ");
+                    String name = sc.nextLine();
+                    System.out.print("Enter the surname: ");
+                    String surname = sc.nextLine();
+                    System.out.print("Enter the number: ");
+                    String phone = sc.nextLine();
+                    ContactBook.addContact(name, surname, phone);
+                    break;
+                case "remove":
+                    ContactBook.removeContact();
+                    break;
+                case "edit":
+                    ContactBook.editContact();
+                    break;
+                case "count":
+                    System.out.println("The Phone Book has " + ContactBook.getSize() + " records.");
+                    break;
+                case "list":
+                    ContactBook.showContacts();
+                    break;
+                case "exit":
+                    quit = 'q';
+                    //System.exit(0);
+                    break;
+                default:
+                    System.out.println("Wrong command.");
+                    break;
+            }
+
+        }
     }
+
 }
+
