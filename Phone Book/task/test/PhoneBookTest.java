@@ -1,4 +1,4 @@
-mport org.hyperskill.hstest.v5.stage.BaseStageTest;
+import org.hyperskill.hstest.v5.stage.BaseStageTest;
 import org.hyperskill.hstest.v5.testcase.CheckResult;
 import org.hyperskill.hstest.v5.testcase.TestCase;
 import phonebook.Main;
