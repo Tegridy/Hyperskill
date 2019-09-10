@@ -1,39 +1,46 @@
 package analyzer;
 
+import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 
 public class Main {
 
     public static void main(String[] args) {
+        //int poolSize = Runtime.getRuntime().availableProcessors();
+        ExecutorService executor = Executors.newFixedThreadPool(4);
 
 
-        byte[] signature = args[2].getBytes();
 
-        long startTime, endTime, totalTime;
+        byte[] signature = args[0].getBytes();
 
         try {
-            byte[] allBytes = Files.readAllBytes(Path.of(args[1]));
 
-            if (args[0].equals("--naive")){
-                startTime = System.nanoTime();
-                System.out.println(naive(allBytes, signature) == 1 ? args[3] : "Unknown file type");
-                endTime = System.nanoTime();
-                totalTime = endTime - startTime;
-                System.out.println("It took: " + (double) TimeUnit.NANOSECONDS.toSeconds(totalTime) + " seconds");
-            } else if (args[0].equals("--KMP")){
-                startTime = System.nanoTime();
-                System.out.println(indexOf(allBytes, signature) == 1 ? args[3] : "Unknown file type");
-                endTime = System.nanoTime();
-                totalTime = endTime - startTime;
-                System.out.println("It took: " + (double) TimeUnit.NANOSECONDS.toSeconds(totalTime) + " seconds");
+            String folderPath = args[2];
+
+            final File folder = new File(folderPath);
+
+            for (File fileEntry : folder.listFiles()) {
+                if (fileEntry.isFile()) {
+
+                    byte[] allBytes = Files.readAllBytes(fileEntry.toPath());
+
+                    Future<Integer> f = executor.submit(() -> indexOf(allBytes, signature));
+
+                    System.out.println(fileEntry.getName() + ": " + ( f.get() == 0 ? args[1] : "Unknown file type" ));
+                }
+
             }
+
+
         } catch (Exception e){
             e.printStackTrace();
         }
 
+        executor.shutdown();
     }
 
     static int naive(byte[] allBytes, byte[] fileType){
@@ -51,7 +58,6 @@ public class Main {
 
         return -1;
     }
-
 
     private static int indexOf(byte[] data, byte[] pattern) {
         if (data.length == 0) return -1;
