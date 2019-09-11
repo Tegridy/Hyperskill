@@ -1,36 +1,63 @@
 package analyzer;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 
 public class Main {
+
+    private static List<String> signatures = new ArrayList<>();
 
     public static void main(String[] args) {
         //int poolSize = Runtime.getRuntime().availableProcessors();
         ExecutorService executor = Executors.newFixedThreadPool(4);
 
-
-
-        byte[] signature = args[0].getBytes();
+        processSignatures(args[0]);
 
         try {
 
-            String folderPath = args[2];
+            String folderPath = args[1];
 
             final File folder = new File(folderPath);
 
             for (File fileEntry : folder.listFiles()) {
                 if (fileEntry.isFile()) {
 
-                    byte[] allBytes = Files.readAllBytes(fileEntry.toPath());
+                    executor.submit( ()-> {
 
-                    Future<Integer> f = executor.submit(() -> indexOf(allBytes, signature));
+                        int currentSignaturePriority = -1;
+                        int foundedSignatureIndex = -1;
 
-                    System.out.println(fileEntry.getName() + ": " + ( f.get() == 0 ? args[1] : "Unknown file type" ));
+                        for (int i = 0; i < signatures.size(); i++) {
+                            byte[] allBytes = new byte[0];
+                            try {
+                                allBytes = Files.readAllBytes(fileEntry.toPath());
+                            } catch (IOException e) {
+                                System.out.println("Can't open the file.");
+                                e.printStackTrace();
+                            }
+
+                            // 0 - Priority, 1 - Signature, 2 - Output text
+                            String[] element = signatures.get(i).split(";");
+
+                            byte[] signature = element[1].getBytes();
+
+                            if (indexOf(allBytes, signature) == 0) {
+                                if (Integer.parseInt(element[0]) > currentSignaturePriority)
+                                    currentSignaturePriority = Integer.parseInt(element[0]);
+                                foundedSignatureIndex = i;
+                            }
+                        }
+
+                        System.out.println(fileEntry.getName() + ": " + (foundedSignatureIndex != -1 ? signatures.get(foundedSignatureIndex).split(";")[2] : "Unknown file type"));
+
+                    });
                 }
 
             }
@@ -39,6 +66,7 @@ public class Main {
         } catch (Exception e){
             e.printStackTrace();
         }
+
 
         executor.shutdown();
     }
@@ -94,5 +122,18 @@ public class Main {
         return failure;
     }
 
+    private static void processSignatures(String filePath){
 
+        try (Scanner sc = new Scanner(new File(filePath))){
+
+            while (sc.hasNextLine()){
+                signatures.add(sc.nextLine().replaceAll("\"", ""));
+            }
+
+        } catch (Exception e){
+            System.out.println("Can't process the file.");
+            e.printStackTrace();
+        }
+
+    }
 }
