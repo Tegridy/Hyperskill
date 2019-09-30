@@ -3,9 +3,7 @@ package analyzer;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -26,47 +24,57 @@ public class Main {
 
             final File folder = new File(folderPath);
 
-            for (File fileEntry : folder.listFiles()) {
-                if (fileEntry.isFile()) {
+            executor.submit( ()-> {
 
-                    executor.submit( ()-> {
+            for (File fileEntry : Objects.requireNonNull(folder.listFiles())) {
+                if (fileEntry.isFile()) {
 
                         int currentSignaturePriority = -1;
                         int foundedSignatureIndex = -1;
 
-                        for (int i = 0; i < signatures.size(); i++) {
-                            byte[] allBytes = new byte[0];
-                            try {
-                                allBytes = Files.readAllBytes(fileEntry.toPath());
-                            } catch (IOException e) {
-                                System.out.println("Can't open the file.");
-                                e.printStackTrace();
-                            }
+                         byte[] allBytes = new byte[0];
+                         try {
+                        allBytes = Files.readAllBytes(fileEntry.toPath());
+                       } catch (IOException e) {
+                        System.out.println("Can't open the file.");
+                        e.printStackTrace();
+                       }
 
-                            // 0 - Priority, 1 - Signature, 2 - Output text
+                        for (int i = 0; i < signatures.size(); i++) {
+
                             String[] element = signatures.get(i).split(";");
 
+                            // 0 - Priority, 1 - Signature, 2 - Output text
                             byte[] signature = element[1].getBytes();
 
-                            if (indexOf(allBytes, signature) == 0) {
-                                if (Integer.parseInt(element[0]) > currentSignaturePriority)
+                           // System.out.println(Arrays.toString(signature));
+
+                            // Changing priority if there is need (files can have multiple signatures)
+                            if (RabinKarp(allBytes, signature) && Integer.parseInt(element[0]) > currentSignaturePriority) {
                                     currentSignaturePriority = Integer.parseInt(element[0]);
-                                foundedSignatureIndex = i;
+                                    foundedSignatureIndex = i;
                             }
+
+                           // KMP version below
+
+                           // if (indexOf(allBytes, signature) == 0) {
+                           //      if (Integer.parseInt(element[0]) > currentSignaturePriority)
+                           //          currentSignaturePriority = Integer.parseInt(element[0]);
+                           //       foundedSignatureIndex = i;
+                           //    }
                         }
 
+                        // Printing result
                         System.out.println(fileEntry.getName() + ": " + (foundedSignatureIndex != -1 ? signatures.get(foundedSignatureIndex).split(";")[2] : "Unknown file type"));
 
-                    });
                 }
-
             }
-
+        });
 
         } catch (Exception e){
+            System.out.println("There is problem with files. Check if path is correct.\n");
             e.printStackTrace();
         }
-
 
         executor.shutdown();
     }
@@ -122,7 +130,63 @@ public class Main {
         return failure;
     }
 
+
+    public static byte byteToHash(byte b){
+        // Hashing byte
+        return (byte)(b - 'A' + 1);
+    }
+
+    public static boolean RabinKarp(byte[] AllText, byte[] RawPattern) {
+
+        int a = 53;
+        long m = 1_000_000_000 + 9;
+
+        long patternHash = 0;
+        long currSubstrHash = 0;
+        long pow = 1;
+
+        // Hashing pattern
+        for (int i = 0; i < RawPattern.length; i++) {
+            patternHash += byteToHash(RawPattern[i]) * pow;
+            patternHash %= m;
+
+            currSubstrHash += byteToHash(AllText[AllText.length - RawPattern.length + i]) * pow;
+            currSubstrHash %= m;
+
+            if (i != RawPattern.length - 1) {
+                pow = pow * a % m;
+            }
+        }
+
+        // Retuning true if pattern is found otherwise false
+        for (int i = AllText.length; i >= RawPattern.length; i--) {
+            if (patternHash == currSubstrHash) {
+
+                for (int j = 0; j < RawPattern.length; j++) {
+                    if (AllText[i - RawPattern.length + j] != RawPattern[j]) {
+                       break;
+                    }
+                }
+//                System.out.println();
+//                System.out.println(currSubstrHash);
+//                System.out.println(patternHash);
+//                System.out.println();
+                return true;
+            }
+
+            // Using rolling hash
+            if (i > RawPattern.length) {
+                currSubstrHash = (currSubstrHash - byteToHash(AllText[i-1]) * pow % m + m) * a % m;
+                currSubstrHash = (currSubstrHash + byteToHash(AllText[i - RawPattern.length - 1])) % m;
+            }
+        }
+
+        return false;
+    }
+
     private static void processSignatures(String filePath){
+
+        // Opening file and creating list with patterns
 
         try (Scanner sc = new Scanner(new File(filePath))){
 
@@ -134,6 +198,5 @@ public class Main {
             System.out.println("Can't process the file.");
             e.printStackTrace();
         }
-
     }
 }
