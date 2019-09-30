@@ -47,8 +47,6 @@ public class Main {
                             // 0 - Priority, 1 - Signature, 2 - Output text
                             byte[] signature = element[1].getBytes();
 
-                           // System.out.println(Arrays.toString(signature));
-
                             // Changing priority if there is need (files can have multiple signatures)
                             if (RabinKarp(allBytes, signature) && Integer.parseInt(element[0]) > currentSignaturePriority) {
                                     currentSignaturePriority = Integer.parseInt(element[0]);
@@ -167,10 +165,6 @@ public class Main {
                        break;
                     }
                 }
-//                System.out.println();
-//                System.out.println(currSubstrHash);
-//                System.out.println(patternHash);
-//                System.out.println();
                 return true;
             }
 
