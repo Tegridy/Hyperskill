@@ -24,16 +24,36 @@ public class Main {
     private static void randomizeMines(int numOfMines){
         Random random = new Random();
         for (int i = 0; i < numOfMines; i++) {
-            int posX = random.nextInt(9);
-            int posY = random.nextInt(9);
+            int row = random.nextInt(9);
+            int col = random.nextInt(9);
 
-            if ( board[posX][posY] == '.'){
-                board[posX][posY] = 'X';
+            if (board[row][col] != 'X'){
+                mines(row, col);
+                board[row][col] = 'X';
             } else {
                 numOfMines++;
             }
         }
 
+    }
+
+    private static void mines(int row, int col){
+        int rowStart  = Math.max( row - 1, 0 );
+        int rowFinish = Math.min( row + 1, board.length - 1 );
+        int colStart  = Math.max( col - 1, 0 );
+        int colFinish = Math.min( col + 1, board.length - 1 );
+
+        for ( int curRow = rowStart; curRow <= rowFinish; curRow++ ) {
+            for ( int curCol = colStart; curCol <= colFinish; curCol++ ) {
+
+                // setting mines info
+                if (board[curRow][curCol] == '.'){
+                    board[curRow][curCol] = '1';
+                } else if (board[curRow][curCol] != 'X') {
+                    board[curRow][curCol] += 1;
+                }
+            }
+        }
     }
 
     private static void fillBoard() {
@@ -50,4 +70,5 @@ public class Main {
                     .replaceAll("]", "").replaceAll(",", ""));
          }
     }
+
 }
