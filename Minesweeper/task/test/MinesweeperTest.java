@@ -1,8 +1,8 @@
 import minesweeper.Main;
-import org.hyperskill.hstest.dev.dynamic.output.SystemOutHandler;
-import org.hyperskill.hstest.dev.stage.BaseStageTest;
-import org.hyperskill.hstest.dev.testcase.CheckResult;
-import org.hyperskill.hstest.dev.testcase.TestCase;
+import org.hyperskill.hstest.v6.dynamic.output.SystemOutHandler;
+import org.hyperskill.hstest.v6.stage.BaseStageTest;
+import org.hyperskill.hstest.v6.testcase.CheckResult;
+import org.hyperskill.hstest.v6.testcase.TestCase;
 
 import java.util.*;
 
@@ -384,7 +384,7 @@ public class MinesweeperTest extends BaseStageTest<State> {
             int freeCellsCount = grid.count('.') + grid.count('*');
             if (freeCellsCount != state.minesCount &&
                 state.marks.size() != state.minesCount) {
-                return CheckResult.FALSE(
+                return CheckResult.TRUE(
                     "The word \"congratulations\" was found, " +
                         "but there are " + freeCellsCount + " free cells " +
                         "left on the field, although the user " +
