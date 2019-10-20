@@ -1,15 +1,22 @@
 package search;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
     private static Scanner sc = new Scanner(System.in);
 
-    private static String[] data;
+    private static ArrayList<String> data = new ArrayList<>();
 
     public static void main(String[] args) {
-        readData();
+        if (args[0].equals("--data") || args[0].contains("--db")) {
+            readData(args[1]);
+        } else {
+            System.out.println("Wrong path to file.");
+        }
         printMenu();
     }
 
@@ -18,25 +25,22 @@ public class Main {
             String name = sc.nextLine().toLowerCase();
 
             System.out.println("Found people: ");
-            for (String info : data) {
-                if (info.toLowerCase().contains(name)) {
-                    System.out.println(info);
+            for (String e : data) {
+                if (e.toLowerCase().contains(name)) {
+                    System.out.println(e);
                 }
             }
     }
 
-    private static void readData(){
-        System.out.println("Enter the number of people: ");
-        int numOfData = sc.nextInt();
-        sc.nextLine();
-
-        data = new String[numOfData];
-
-        System.out.println("Enter all people: ");
-        for (int i = 0; i < data.length; i++) {
-            data[i] = sc.nextLine();
+    private static void readData(String path){
+        File f = new File(path);
+        try (Scanner scanner = new Scanner(f)) {
+            while (scanner.hasNextLine()){
+                data.add(scanner.nextLine());
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found.");
         }
-        System.out.println();
     }
 
     private static void printMenu(){
@@ -50,6 +54,7 @@ public class Main {
 
             int choice = sc.nextInt();
             sc.nextLine();
+            System.out.println();
             switch (choice) {
                 case 1:
                     searchData();
@@ -65,7 +70,6 @@ public class Main {
                     System.out.println("Incorrect option! Try again.");
                     break;
             }
-            System.out.println();
         }
     }
 
