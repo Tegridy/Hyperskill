@@ -1,24 +1,40 @@
 package search;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        String text = sc.nextLine();
-        String toFind = sc.nextLine();
+        System.out.println("Enter the number of people: ");
+        int numOfData = sc.nextInt();
+        sc.nextLine();
 
-        String[] textArray = text.split(" ");
+        String[] data = new String[numOfData];
 
-        for (int i = 0; i < textArray.length; i++) {
-            if (textArray[i].equals(toFind)){
-                System.out.println(i+1);
-                break;
-            } else if (i == textArray.length-1){
-                System.out.println("Not found");
-                break;
+        System.out.println("Enter all people: ");
+        for (int i = 0; i < data.length; i++) {
+            data[i] = sc.nextLine();
+        }
+        System.out.println();
+
+        System.out.println("Enter the number of search queries: ");
+        int numOfQueries = sc.nextInt();
+        sc.nextLine();
+        System.out.println();
+
+        for (int i = 0; i < numOfQueries; i++) {
+            System.out.println("Enter data to search people: ");
+            String name = sc.nextLine().trim();
+
+            System.out.println("Found people: ");
+            for (String info : data) {
+                if (info.contains(name)) {
+                    System.out.println(info);
+                }
             }
         }
 
     }
+
 }
