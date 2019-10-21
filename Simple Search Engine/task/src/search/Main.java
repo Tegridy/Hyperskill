@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Main {
     private static Scanner sc = new Scanner(System.in);
 
-    private static ArrayList<String> data = new ArrayList<>();
+    private static HashMap<Integer, String> namesMap = new HashMap<>();
+    private static ArrayList<String> results = new ArrayList<>();
 
     public static void main(String[] args) {
         if (args[0].equals("--data") || args[0].contains("--db")) {
@@ -24,19 +26,34 @@ public class Main {
             System.out.println("Enter a name or email to search all suitable people: ");
             String name = sc.nextLine().toLowerCase();
 
-            System.out.println("Found people: ");
-            for (String e : data) {
+            for (String e : namesMap.values()) {
                 if (e.toLowerCase().contains(name)) {
-                    System.out.println(e);
+                    results.add(e);
                 }
             }
+
+            if (results.size() > 0){
+                System.out.println(results.size() + " persons found: ");
+
+                for (String elem : results) {
+                    System.out.println(elem);
+                }
+            } else {
+                System.out.println("No matching people found.");
+            }
+
+            results.clear();
     }
 
     private static void readData(String path){
         File f = new File(path);
+
         try (Scanner scanner = new Scanner(f)) {
+            int i = 0;
             while (scanner.hasNextLine()){
-                data.add(scanner.nextLine());
+                String s = scanner.nextLine();
+                namesMap.put(i, s);
+                i++;
             }
         } catch (FileNotFoundException e) {
             System.out.println("File not found.");
@@ -75,8 +92,8 @@ public class Main {
 
     private static void printAll(){
         System.out.println("=== List of people ===");
-        for(String e : data){
-            System.out.println(e);
+        for(String elem : namesMap.values()){
+            System.out.println(elem);
         }
 
         System.out.println();
