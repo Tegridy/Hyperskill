@@ -3,18 +3,17 @@ package search;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 
 public class Main {
     private static Scanner sc = new Scanner(System.in);
 
-    private static HashMap<Integer, String> namesMap = new HashMap<>();
+    private static HashMap<Integer, String> namesMap = new HashMap<>(); // using map as it says in task
     private static ArrayList<String> results = new ArrayList<>();
 
     public static void main(String[] args) {
-        if (args[0].equals("--data") || args[0].contains("--db")) {
+        if (args[0].equals("--data") || args[0].equals("--db")) {
             readData(args[1]);
         } else {
             System.out.println("Wrong path to file.");
@@ -23,29 +22,90 @@ public class Main {
     }
 
     private static void searchData() {
-            System.out.println("Enter a name or email to search all suitable people: ");
-            String name = sc.nextLine().toLowerCase();
+        System.out.println("Select a matching strategy: ALL, ANY, NONE ");
+        String command = sc.nextLine().toUpperCase();
 
-            for (String e : namesMap.values()) {
-                if (e.toLowerCase().contains(name)) {
-                    results.add(e);
+        System.out.println("Enter a name or email to search all suitable people: ");
+        String[] data = sc.nextLine().toLowerCase().split(" ");
+
+        switch (command){
+            case "ANY":
+                any(data);
+                break;
+            case "ALL":
+                all(data);
+                break;
+            case "NONE":
+                none(data);
+                break;
+            default:
+                System.out.println("Wrong command.");
+                searchData();
+                break;
+        }
+    }
+
+    private static void any(String[] data){
+        for(String contact : namesMap.values()){
+            for (String name : data) {
+                if (contact.toLowerCase().contains(name)) {
+                    results.add(contact);
                 }
             }
+        }
+        printResults();
+    }
 
-            if (results.size() > 0){
-                System.out.println(results.size() + " persons found: ");
+    private static void all(String[] data) {
+        for(String contact : namesMap.values()){
+            int i = 0; // if number of found words equals length of query size add it to result list
 
-                for (String elem : results) {
-                    System.out.println(elem);
+            for (String name : data) {
+                if (!contact.toLowerCase().contains(name)) {
+                    break;
+                } else {
+                    i++;
+                    if (i == data.length) {
+                      results.add(contact);
+                    }
                 }
-            } else {
-                System.out.println("No matching people found.");
             }
+        }
+        printResults();
+    }
 
-            results.clear();
+    private static void none(String[] data){
+        for(String contact : namesMap.values()){
+            int i = 0;
+
+            for (String name : data) {
+                if (!contact.toLowerCase().contains(name)) {
+                    i++;
+                    if (i == data.length) {
+                        results.add(contact);
+                    }
+                }
+            }
+        }
+        printResults();
+    }
+
+    private static void printResults() {
+        if (results.size() > 0) {
+            System.out.println(results.size() + " persons found: ");
+
+            for (String elem : results) {
+                System.out.println(elem);
+            }
+        } else {
+            System.out.println("No matching people found.");
+        }
+
+        results.clear();
     }
 
     private static void readData(String path){
+        // path = "C:\\IdeaProjects\\Simple Search Engine\\Simple Search Engine\\task\\src\\search\\data.txt";
         File f = new File(path);
 
         try (Scanner scanner = new Scanner(f)) {
