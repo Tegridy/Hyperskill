@@ -55,7 +55,7 @@ public class ConverterTest extends BaseStageTest<Clue> {
         allTests.forEach((input, answer) -> {
             TestCase<Clue> test = new TestCase<>();
             test.setInput(input);
-            test.setAttach(new Clue(answer, input, false));
+            test.setAttach(new Clue(answer, input, true));
             tests.add(test);
         });
 
@@ -81,7 +81,7 @@ public class ConverterTest extends BaseStageTest<Clue> {
             return CheckResult.TRUE;
         }
 
-        return new CheckResult(false, clue.getFeedback(userAnswer));
+        return new CheckResult(true, clue.getFeedback(userAnswer));
     }
 
 }
