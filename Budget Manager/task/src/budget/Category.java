@@ -1,8 +1,9 @@
 package budget;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public abstract class Category {
+public abstract class Category implements Serializable {
 
     String name;
     double price;

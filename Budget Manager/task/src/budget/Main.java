@@ -1,5 +1,7 @@
 package budget;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -7,7 +9,7 @@ public class Main {
 
     private static Scanner sc = new Scanner(System.in).useLocale(Locale.ENGLISH);
 
-    private static double accountBalance = 0.0;
+    static double accountBalance = 0.0;
     //private static double totalSum = 0;
 
     public static void main(String[] args) {
@@ -26,6 +28,8 @@ public class Main {
                             "2) Add purchase\n" +
                             "3) Show list of purchases\n" +
                             "4) Balance\n" +
+                            "5) Save\n" +
+                            "6) Load\n" +
                             "0) Exit");
 
             int choice = sc.nextInt();
@@ -46,6 +50,12 @@ public class Main {
                     break;
                 case 4:
                     System.out.println("Balance: $" + accountBalance);
+                    break;
+                case 5:
+                    FileOperations.saveToFile();
+                    break;
+                case 6:
+                    FileOperations.readFromFile();
                     break;
                 case 0:
                     System.out.println("Bye!");
@@ -190,4 +200,5 @@ public class Main {
             System.out.println("Purchase list is empty!");
         }
     }
+
 }
