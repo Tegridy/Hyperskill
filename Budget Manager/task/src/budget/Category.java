@@ -8,7 +8,7 @@ public abstract class Category implements Serializable {
     String name;
     double price;
 
-    static ArrayList<Category> all = new ArrayList<>();
+    static ArrayList<Category> completeList = new ArrayList<>();
 
      Category(String name, double price) {
         this.name = name;
@@ -17,10 +17,7 @@ public abstract class Category implements Serializable {
 
     @Override
     public String toString() {
-        return "Category{" +
-                "name='" + name + '\'' +
-                ", price=" + price +
-                '}';
+        return name + " $" + price;
     }
 
     public String getName() {

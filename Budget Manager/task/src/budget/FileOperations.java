@@ -9,7 +9,7 @@ public class FileOperations {
 
         try (FileOutputStream file = new FileOutputStream("purchases.txt")){
             ObjectOutputStream out = new ObjectOutputStream(file);
-            out.writeObject(Category.all);
+            out.writeObject(Category.completeList);
             out.writeObject(Main.accountBalance);
             out.close();
 
@@ -29,7 +29,7 @@ public class FileOperations {
         try (FileInputStream file = new FileInputStream("purchases.txt")){
 
             ObjectInputStream in = new ObjectInputStream(file);
-            Category.all = (ArrayList) in.readObject();;
+            Category.completeList = (ArrayList) in.readObject();;
             Main.accountBalance = (double) in.readObject();
             in.close();
 

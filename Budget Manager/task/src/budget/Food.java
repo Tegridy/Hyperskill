@@ -22,4 +22,5 @@ public class Food extends Category {
     public double getPrice() {
         return super.getPrice();
     }
+
 }

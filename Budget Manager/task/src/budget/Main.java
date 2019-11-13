@@ -1,9 +1,6 @@
 package budget;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
@@ -14,10 +11,10 @@ public class Main {
 
     public static void main(String[] args) {
         // write your code here
-        printMenu();
+        printMainMenu();
     }
 
-    private static void printMenu() {
+    private static void printMainMenu() {
         boolean quit = false;
         while (!quit) {
 
@@ -30,11 +27,10 @@ public class Main {
                             "4) Balance\n" +
                             "5) Save\n" +
                             "6) Load\n" +
+                            "7) Analyze (Sort)\n" +
                             "0) Exit");
 
             int choice = sc.nextInt();
-            //sc.nextLine();
-
             System.out.println();
 
             switch (choice) {
@@ -57,6 +53,9 @@ public class Main {
                 case 6:
                     FileOperations.readFromFile();
                     break;
+                case 7:
+                    analyze();
+                    break;
                 case 0:
                     System.out.println("Bye!");
                     quit = true;
@@ -64,7 +63,7 @@ public class Main {
                     break;
                 default:
                     System.out.println("Wrong choice. Try again!");
-                    printMenu();
+                    printMainMenu();
                     break;
             }
         }
@@ -88,7 +87,7 @@ public class Main {
         int choice = sc.nextInt();
         sc.nextLine();
 
-        if (choice == 5) printMenu();
+        if (choice == 5) printMainMenu();
 
         System.out.println("Enter purchase name: ");
         String purchaseName = sc.nextLine();
@@ -100,25 +99,25 @@ public class Main {
             accountBalance -= price;
         } else {
             System.out.println("Not enough money!");
-            printMenu();
+            printMainMenu();
         }
 
         switch (choice){
             case 1:
                 Food f = new Food(purchaseName, price);
-                Category.all.add(f);
+                Category.completeList.add(f);
                 break;
             case 2:
                 Clothes c = new Clothes(purchaseName, price);
-                Category.all.add(c);
+                Category.completeList.add(c);
                 break;
             case 3:
                 Entertainment e = new Entertainment(purchaseName, price);
-                Category.all.add(e);
+                Category.completeList.add(e);
                 break;
             case 4:
                 Other o = new Other(purchaseName, price);
-                Category.all.add(o);
+                Category.completeList.add(o);
                 break;
         }
         System.out.println("\nPurchase added.");
@@ -158,28 +157,29 @@ public class Main {
                 printAll();
                 break;
             case 6:
-                printMenu();
+                printMainMenu();
                 break;
         }
     }
 
-    private static void printByCategory(Class c){
+    private static void printByCategory(Class receivedClass){
 
         double totalSum = 0;
 
-        if (Category.all.size() > 0) {
+        if (!Category.completeList.isEmpty()) {
 
-            for (int i = 0; i < Category.all.size(); i++) {
+            for (int i = 0; i < Category.completeList.size(); i++) {
 
-                Category cat = Category.all.get(i);
+                Category cat = Category.completeList.get(i);
 
-                if (cat.getClass() == c) {
+                if (cat.getClass() == receivedClass) {
                     System.out.println(cat.toString());
                     totalSum += cat.getPrice();
                 }
             }
 
-            System.out.println("Total: $" + totalSum);
+            System.out.println("\nTotal: $" + totalSum);
+            System.out.println();
         } else {
             System.out.println("Purchase list is empty!");
         }
@@ -189,8 +189,8 @@ public class Main {
     private static void printAll(){
         double totalSum = 0;
 
-        if (Category.all.size() > 0) {
-            for (Category c : Category.all) {
+        if (!Category.completeList.isEmpty()) {
+            for (Category c : Category.completeList) {
                 System.out.println(c.toString());
                 totalSum += c.getPrice();
             }
@@ -198,6 +198,80 @@ public class Main {
             System.out.println("\nTotal: $" + totalSum);
         } else {
             System.out.println("Purchase list is empty!");
+        }
+    }
+
+    private static void analyze(){
+        System.out.println(
+                "How do you want to sort?\n" +
+                "1) Sort all purchases\n" +
+                "2) Sort by type\n" +
+                "3) Sort certain type\n" +
+                "4) Back");
+
+        int choice = sc.nextInt();
+        if (choice == 4) printMainMenu();
+
+        Category.completeList.sort(Comparator.comparingDouble(Category::getPrice).reversed());
+
+        if (!Category.completeList.isEmpty()) {
+
+            switch (choice) {
+                case 1:
+                    System.out.println("All: ");
+                    for (Category c : Category.completeList) {
+                        System.out.println(c);
+                    }
+                    System.out.println("\nTotal: $" + Category.completeList.stream().mapToDouble(Category::getPrice).sum());
+                    System.out.println();
+                    break;
+                case 2:
+                    ArrayList<Category> cat = Category.completeList;
+
+                    System.out.println("Types: ");
+                    System.out.println("Food - $" + cat.stream().filter(o -> o.getClass() == Food.class).mapToDouble(Category::getPrice).sum());
+                    System.out.println("Clothes - $" + cat.stream().filter(o -> o.getClass() == Clothes.class).mapToDouble(Category::getPrice).sum());
+                    System.out.println("Entertainment  - $" + cat.stream().filter(o -> o.getClass() == Entertainment.class).mapToDouble(Category::getPrice).sum());
+                    System.out.println("Other - $" + cat.stream().filter(o -> o.getClass() == Other.class).mapToDouble(Category::getPrice).sum());
+
+                    System.out.println("\nTotal sum - $" + cat.stream().mapToDouble(Category::getPrice).sum());
+                    System.out.println();
+                    break;
+                case 3:
+                    System.out.println(
+                            "Choose the type of purchase\n" +
+                                    "1) Food\n" +
+                                    "2) Clothes\n" +
+                                    "3) Entertainment\n" +
+                                    "4) Other\n"
+                    );
+
+                    int choice2 = sc.nextInt();
+                    switch (choice2) {
+                        case 1:
+                            printByCategory(Food.class);
+                            break;
+                        case 2:
+                            printByCategory(Clothes.class);
+                            break;
+                        case 3:
+                            printByCategory(Entertainment.class);
+                            break;
+                        case 4:
+                            printByCategory(Other.class);
+                            break;
+                    }
+                    analyze();
+                    break;
+                default:
+                    System.out.println("Wrong choice. Try again.");
+                    analyze();
+                    break;
+            }
+            analyze();
+        } else {
+            System.out.println("\nPurchase list is empty! \n");
+            analyze();
         }
     }
 
